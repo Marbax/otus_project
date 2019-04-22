@@ -1,0 +1,95 @@
+---
+#https://docs.docker.com/compose/install/
+version: '3.3'
+services:
+
+  mongo_db:
+    env_file: .env
+    image: mongo:${MONGO_VER}
+    restart: always
+    volumes:
+      - mongo_db:/data/db
+    networks:
+      back_net:
+       aliases:
+       - mongo_db
+       #- rabbit_mq_db
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
+
+  ui:
+    env_file: .env
+    image: ${USERNAME}/ui:${UI_VER}
+    #build: ./ui
+    restart: always
+    ports:
+      - ${HOST_PORT}:${APP_PORT}/tcp
+    networks:
+      back_net:
+       aliases:
+       - ui
+      front_net:
+       aliases:
+       - ui
+    #logging:
+    #  driver: "fluentd"
+    #  options:
+    #    fluentd-address: localhost:24224
+    #    tag: service.ui
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
+    depends_on:
+      - mongo_db
+
+  crawler:
+    env_file: .env
+    image: ${USERNAME}/crawler:${CRAWLER_VER}
+    restart: always
+    networks:
+      back_net:
+       aliases:
+       - crawler
+      front_net:
+       aliases:
+       - crwawler
+    #logging:
+    #  driver: "fluentd"
+    #  options:
+    #    fluentd-address: localhost:24224
+    #    tag: service.crawler
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
+
+  rabbit_mq:
+    env_file: .env
+    image: rabbitmq:${RABBIT_MQ_VER}
+    restart: always
+    hostname: ${QUEUE_NAME}}
+    volumes:
+      - rabbit_mq:/var/lib/rabbitmq
+    networks:
+      back_net:
+       aliases:
+       - rabbit_mq
+      #front_net:
+       #aliases:
+       #- crawler
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
+      - RABBITMQ_DEFAULT_USER=${RABBIT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBIT_PASSWORD}
+
+volumes:
+  mongo_db:
+  rabbit_mq:
+networks:
+  back_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.69.96.0/24
+  front_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.96.69.0/24

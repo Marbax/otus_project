@@ -1,0 +1,17 @@
+---
+# https://docs.gitlab.com/omnibus/docker/README.html
+web:
+  image: 'gitlab/gitlab-ce:latest'
+  restart: always
+  hostname: 'gitlab.crawler'
+  environment:
+    GITLAB_OMNIBUS_CONFIG: |
+      external_url 'http://192.168.88.12' # внешний ИП
+  ports:
+    - '80:80'
+    - '443:443'
+    - '2222:22'
+  volumes:
+    - '/srv/gitlab/config:/etc/gitlab' # For storing the GitLab configuration files
+    - '/srv/gitlab/logs:/var/log/gitlab' # For storing logs
+    - '/srv/gitlab/data:/var/opt/gitlab' # For storing application data
