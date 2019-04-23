@@ -1,5 +1,5 @@
 ---
-image: gitlab/dind
+image: python:3.5
 
 stages:
   - build
