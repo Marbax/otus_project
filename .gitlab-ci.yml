@@ -54,9 +54,9 @@ test_crawler_job:
     - name: rabbitmq:latest
       alias: rabbitmq-crawler
   script:
-    - python3 -m unittest discover -s src/crawler/tests/ 
-    - coverage run -m unittest discover -s src/crawler/tests/ 
-    - coverage report --include src/crawler/crawler/crawler.py
+    - python3 -m unittest discover -s crawler/tests/ 
+    - coverage run -m unittest discover -s crawler/tests/ 
+    - coverage report --include crawler/crawler.py
 
 ###############################################
 ############### Review section ##################
