@@ -14,22 +14,22 @@ variables:
   DOCKER_DRIVER: overlay2
   PROJECT_NAME: crawler
 
-before_script:
-  - docker login -u marbax -p Nikniknik1994MNE
+#before_script:
+#  - docker login -u marbax -p Nikniknik1994MNE
 
 ###############################################
 ############### Build section ##################
 ###############################################
 
-build_ui_job:
-  stage: build
-  script:
-    - docker build -t marbax/ui:test ui/
+#build_ui_job:
+#  stage: build
+#  script:
+#    - docker build -t marbax/ui:test ui/
 
-build_crawler_job:
-  stage: build
-  script:
-    - docker build -t marbax/crawler:test crawler/
+#build_crawler_job:
+#  stage: build
+#  script:
+#    - docker build -t marbax/crawler:test crawler/
 
 ###############################################
 ############### Test section ##################
