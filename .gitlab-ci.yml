@@ -10,11 +10,12 @@ stages:
 
 
 variables:
-  DATABASE_URL: 'mongodb://mongo/user_posts'
+  #DATABASE_URL: 'mongodb://mongo/user_posts'
+  DOCKER_DRIVER: overlay2
+  PROJECT_NAME: crawler
 
 before_script:
-  - cd reddit
-  - bundle install
+  - docker login -u marbax -p Nikniknik1994MNE
 
 ###############################################
 ############### Build section ##################
