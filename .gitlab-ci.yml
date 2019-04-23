@@ -42,7 +42,7 @@ test_ui_job:
     - name: mongo:latest
       alias: mongo-ui
   script:
-    - python -m unittest discover -s src/ui/tests/test_ui.py
+    - python -m unittest discover -s src/ui/tests/
     - coverage run -m unittest discover -s src/ui/tests/
     - coverage report --include src/ui/ui/ui.py
 
