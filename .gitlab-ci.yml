@@ -9,12 +9,12 @@ stages:
   - production
 
 
-#variables:
-#  DATABASE_URL: 'mongodb://mongo/user_posts'
+variables:
+  DATABASE_URL: 'mongodb://mongo/user_posts'
 
-#before_script:
-#  - cd reddit
-#  - bundle install
+before_script:
+  - cd reddit
+  - bundle install
 
 ###############################################
 ############### Build section ##################
