@@ -36,15 +36,15 @@ before_script:
 ############### Test section ##################
 ###############################################
 
-#test_ui_job:
-#  stage: test
-#  services:
-#    - name: mongo:latest
-#      alias: mongo-ui
-#  script:
-#    - python3 -m unittest discover -s src/ui/tests/
-#    - coverage run -m unittest discover -s src/ui/tests/
-#    - coverage report --include src/ui/ui/ui.py
+test_ui_job:
+  stage: test
+  services:
+    - name: mongo:latest
+      alias: mongo-ui
+  script:
+    - python3 -m unittest discover -s ui/tests/
+    - coverage run -m unittest discover -s ui/tests/
+    - coverage report --include ui/ui/ui.py
 
 test_crawler_job:
   stage: test
