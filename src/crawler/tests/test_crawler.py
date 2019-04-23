@@ -1,5 +1,5 @@
 import unittest
-from crawler import crawler
+from  src/crawler import crawler
 
 class TestCrawler(unittest.TestCase):
     def test_page_parse(self):
