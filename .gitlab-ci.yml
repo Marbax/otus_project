@@ -80,6 +80,7 @@ test_ui_job:
       alias: mongo-ui
   script:
     - echo "Testing ui in $CI_ENVIRONMENT_SLUG"
+    - pip3 install --upgrade pip && pip3 install flask==0.12.2 gunicorn==19.7.1 structlog==17.2.0 pymongo==3.5.1 requests==2.18.4 prometheus_client==0.1.0 uuid beautifulsoup4==4.6.0 pika==0.11.0 coverage==4.4.2 mongomock==3.8.0
     - python3 -m unittest discover -s ui/tests/
     - coverage run -m unittest discover -s ui/tests/
     - coverage report --include ui/ui/ui.py
@@ -102,6 +103,7 @@ test_crawler_job:
       alias: rabbitmq-crawler
   script:
     - echo "Testing crawler in $CI_ENVIRONMENT_SLUG"
+    - pip3 install --upgrade pip && pip3 install flask==0.12.2 gunicorn==19.7.1 structlog==17.2.0 pymongo==3.5.1 requests==2.18.4 prometheus_client==0.1.0 uuid beautifulsoup4==4.6.0 pika==0.11.0 coverage==4.4.2 mongomock==3.8.0
     - python3 -m unittest discover -s crawler/tests/ 
     - coverage run -m unittest discover -s crawler/tests/ 
     - coverage report --include crawler/crawler/crawler.py
@@ -111,7 +113,7 @@ test_crawler_job:
 ###############################################
 
 deploy_dev_job:
-  stage: review
+  stage: build
   script:
     - echo 'Deploy'
   environment:
@@ -119,7 +121,7 @@ deploy_dev_job:
     url: http://dev.example.com
 
 branch review:
-  stage: review
+  stage: build
   script: echo "Deploy to $CI_ENVIRONMENT_SLUG"
   environment:
     name: branch/$CI_COMMIT_REF_NAME
@@ -135,7 +137,7 @@ branch review:
 ###############################################
 
 staging:
-  stage: stage
+  stage: build
   when: manual
   only:
     - /^\d+\.\d+\.\d+/
@@ -150,7 +152,7 @@ staging:
 ###############################################
 
 production:
-  stage: production
+  stage: build
   when: manual
   only:
     - /^\d+\.\d+\.\d+/
