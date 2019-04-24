@@ -1,5 +1,6 @@
 ---
-image: python:3.5
+image: docker:stable
+  #image: python:3.5
 
 stages:
   - build
@@ -11,12 +12,13 @@ stages:
 
 variables:
   #DATABASE_URL: 'mongodb://mongo/user_posts'
+  REGISTRY_URL: http://192.168.88.112/
   DOCKER_DRIVER: overlay2
   PROJECT_NAME: crawler
 
 before_script:
   - pip3 install --upgrade pip && pip3 install flask==0.12.2 gunicorn==19.7.1 structlog==17.2.0 pymongo==3.5.1 requests==2.18.4 prometheus_client==0.1.0 uuid beautifulsoup4==4.6.0 pika==0.11.0 coverage==4.4.2 mongomock==3.8.0
-  - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+  - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD $CI_JOB_TOKEN $REGISTRY_URL
 
 ###############################################
 ############### Build section ##################
@@ -31,6 +33,7 @@ build_ui_job:
     - branches
   except:
     - master
+    - tags
   script:
     - echo "Building ui in $CI_ENVIRONMENT_SLUG"
 #    - docker build -t marbax/ui:test ui/
@@ -44,6 +47,7 @@ build_crawler_job:
     - branches
   except:
     - master
+    - tags
   script:
     - echo "Building crawler in $CI_ENVIRONMENT_SLUG"
 #    - docker build -t marbax/crawler:test crawler/
@@ -61,6 +65,7 @@ test_ui_job:
     - branches
   except:
     - master
+    - tags
   services:
     - name: mongo:latest
       alias: mongo-ui
@@ -79,6 +84,7 @@ test_crawler_job:
     - branches
   except:
     - master
+    - tags
   services:
     - name: mongo:latest
       alias: mongo-crawler
@@ -112,6 +118,7 @@ branch review:
     - branches
   except:
     - master
+    - tags
 
 ###############################################
 ############### Staging section ##################
