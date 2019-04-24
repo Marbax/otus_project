@@ -84,8 +84,8 @@ test_ui_job:
     - export MONGO=mongo-ui
     - export MONGO_PORT=27017
     - cd ui && python3 -m unittest discover -s tests/
-    - cd ui && coverage run -m unittest discover -s tests/
-    - cd ui && coverage report --include ui/ui.py
+    - cd ui && coverage3 run -m unittest discover -s tests/
+    - cd ui && coverage3 report --include ui/ui.py
 
 test_crawler_job:
   stage: build
