@@ -3,6 +3,7 @@ from ui import ui
 import unittest
 import tempfile
 import mongomock
+import pprint from pprint
 
 def mock():
     db = mongomock.MongoClient()
@@ -14,6 +15,7 @@ class TestWebUI(unittest.TestCase):
 
 
     def setUp(self):
+        pprint(ui)
         self.app = ui.app.test_client()
 
     def test_empty_db(self):
