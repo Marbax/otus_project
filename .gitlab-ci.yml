@@ -65,7 +65,7 @@ build_crawler_job:
 ###############################################
 
 test_ui_py2:
-  stage: build
+  stage: test
   image: python:2-alpine
   environment:
     name: testing/$CI_COMMIT_REF_NAME
@@ -96,7 +96,7 @@ test_crawler_py2:
     - tags
   script:
     - echo "Testing crawler in $CI_ENVIRONMENT_SLUG"
-    - pip install -r crawler/requirements.txt -r crawler/requirements-test.txt functools
+    - pip install -r crawler/requirements.txt -r crawler/requirements-test.txt
     - cd crawler 
     - python -m unittest discover -s tests/ 
     - coverage run -m unittest discover -s tests/ 
@@ -104,7 +104,7 @@ test_crawler_py2:
 
 
 test_ui_py3:
-  stage: build
+  stage: test
   image: python:alpine
   environment:
     name: testing/$CI_COMMIT_REF_NAME
@@ -135,7 +135,7 @@ test_crawler_py3:
     - tags
   script:
     - echo "Testing crawler in $CI_ENVIRONMENT_SLUG"
-    - pip3 install -r crawler/requirements.txt -r crawler/requirements-test.txt
+    - pip3 install -r crawler/requirements.txt -r crawler/requirements-test.txt functools
     - cd crawler 
     - python3 -m unittest discover -s tests/ 
     - coverage3 run -m unittest discover -s tests/ 
