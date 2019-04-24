@@ -3,8 +3,7 @@ from ui import ui
 import unittest
 import tempfile
 import mongomock
-import pprint from pprint
-
+from pprint import pprint
 def mock():
     db = mongomock.MongoClient()
     return db
