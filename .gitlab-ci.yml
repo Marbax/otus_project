@@ -80,7 +80,7 @@ test_ui_job:
       alias: mongo-ui
   script:
     - echo "Testing ui in $CI_ENVIRONMENT_SLUG"
-    - pip3 install -r requirements.txt -r requirements-test.txt
+    - pip3 install -r ui/requirements.txt -r ui/requirements-test.txt
     - export MONGO=mongo-ui
     - export MONGO_PORT=27017
     - python3 -m unittest discover -s ui/tests/
