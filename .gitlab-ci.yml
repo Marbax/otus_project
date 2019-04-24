@@ -96,6 +96,7 @@ test_crawler_py2:
     - tags
   script:
     - echo "Testing crawler in $CI_ENVIRONMENT_SLUG"
+    - pip install --upgrade pip
     - pip install -r crawler/requirements.txt -r crawler/requirements-test.txt
     - cd crawler 
     - python -m unittest discover -s tests/ 
@@ -135,6 +136,7 @@ test_crawler_py3:
     - tags
   script:
     - echo "Testing crawler in $CI_ENVIRONMENT_SLUG"
+    - pip3 install --upgrade pip
     - pip3 install -r crawler/requirements.txt -r crawler/requirements-test.txt functools
     - cd crawler 
     - python3 -m unittest discover -s tests/ 
