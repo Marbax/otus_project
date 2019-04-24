@@ -11,7 +11,6 @@ stages:
 
 
 variables:
-  #DATABASE_URL: 'mongodb://mongo/user_posts'
   REGISTRY_URL: http://192.168.88.12/
   DOCKER_DRIVER: overlay2
   PROJECT_NAME: crawler
@@ -43,7 +42,7 @@ build_ui_job:
     - tags
   script:
     - echo "Building ui in $CI_ENVIRONMENT_SLUG"
-    - docker build -t marbax/ui:test ui/
+    - docker build -t ${USERNAME}/ui:${UI_VER} ui/
 
 build_crawler_job:
   stage: test
@@ -58,7 +57,7 @@ build_crawler_job:
     - tags
   script:
     - echo "Building crawler in $CI_ENVIRONMENT_SLUG"
-    - docker build -t marbax/crawler:test crawler/
+    - docker build -t ${USERNAME}/crawler:${CRAWLER_VER} crawler/
 
 ###############################################
 ############### Test section ##################
