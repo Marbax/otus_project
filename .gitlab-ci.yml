@@ -64,7 +64,7 @@ build_crawler_job:
 ############### Test section ##################
 ###############################################
 
-test_ui_python2_job:
+test_ui_py2:
   stage: build
   image: python:2-alpine
   environment:
@@ -83,7 +83,7 @@ test_ui_python2_job:
     - coverage run -m unittest discover -s tests/
     - coverage report --include ui/ui.py
 
-test_crawler_python2_job:
+test_crawler_py2:
   stage: build
   image: python:2-alpine
   environment:
@@ -94,21 +94,16 @@ test_crawler_python2_job:
   except:
     - master
     - tags
-#  services:
-#    - name: mongo:latest
-#      alias: mongo-crawler
-#    - name: rabbitmq:latest
-#      alias: rabbitmq-crawler
   script:
     - echo "Testing crawler in $CI_ENVIRONMENT_SLUG"
-    - pip install -r crawler/requirements.txt -r crawler/requirements-test.txt
+    - pip install -r crawler/requirements.txt -r crawler/requirements-test.txt --user
     - cd crawler 
     - python -m unittest discover -s tests/ 
     - coverage run -m unittest discover -s tests/ 
     - coverage report --include crawler/crawler.py
 
 
-test_ui_python3_job:
+test_ui_py3:
   stage: build
   image: python:alpine
   environment:
@@ -127,7 +122,7 @@ test_ui_python3_job:
     - coverage3 run -m unittest discover -s tests/
     - coverage3 report --include ui/ui.py
 
-test_crawler_python3_job:
+test_crawler_py3:
   stage: build
   image: python:alpine
   environment:
@@ -138,14 +133,9 @@ test_crawler_python3_job:
   except:
     - master
     - tags
-#  services:
-#    - name: mongo:latest
-#      alias: mongo-crawler
-#    - name: rabbitmq:latest
-#      alias: rabbitmq-crawler
   script:
     - echo "Testing crawler in $CI_ENVIRONMENT_SLUG"
-    - pip3 install -r crawler/requirements.txt -r crawler/requirements-test.txt
+    - pip3 install -r crawler/requirements.txt -r crawler/requirements-test.txt --user
     - cd crawler 
     - python3 -m unittest discover -s tests/ 
     - coverage3 run -m unittest discover -s tests/ 
