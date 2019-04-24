@@ -17,14 +17,14 @@ variables:
   PROJECT_NAME: crawler
 
 before_script:
-  - sudo docker info
+#  - sudo docker info
   - python --version 
   - python3 --version
   - pip -V 
   - pip2 -V 
   - pip3 -V 
   - pip3 install --upgrade pip && pip3 install flask==0.12.2 gunicorn==19.7.1 structlog==17.2.0 pymongo==3.5.1 requests==2.18.4 prometheus_client==0.1.0 uuid beautifulsoup4==4.6.0 pika==0.11.0 coverage==4.4.2 mongomock==3.8.0
-  - sudo docker login -u $DOCKER_USER -p $DOCKER_PASSWORD $CI_JOB_TOKEN $REGISTRY_URL
+  - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD $CI_JOB_TOKEN $REGISTRY_URL
 
 ###############################################
 ############### Build section ##################
