@@ -83,9 +83,9 @@ test_ui_job:
     - pip3 install -r ui/requirements.txt -r ui/requirements-test.txt
     - export MONGO=mongo-ui
     - export MONGO_PORT=27017
-    - python3 -m unittest discover -s ui/tests/
-    - coverage run -m unittest discover -s ui/tests/
-    - coverage report --include ui/ui/ui.py
+    - cd ui && python3 -m unittest discover -s tests/
+    - cd ui && coverage run -m unittest discover -s tests/
+    - cd ui && coverage report --include ui/ui.py
 
 test_crawler_job:
   stage: build
