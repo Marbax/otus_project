@@ -81,14 +81,15 @@ test_ui_job:
   script:
     - echo "Testing ui in $CI_ENVIRONMENT_SLUG"
     - pip install -r ui/requirements.txt -r ui/requirements-test.txt
-    - cd ui && python -m unittest discover -s tests/
+    - cd ui 
+    - python -m unittest discover -s tests/
     - coverage run -m unittest discover -s tests/
     - coverage report --include ui/ui.py
 
 test_crawler_job:
   stage: build
-  image: python:2-alpine
-#  image: python:alpine
+#  image: python:2-alpine
+  image: python:alpine
   environment:
     name: testing/$CI_COMMIT_REF_NAME
     url: https://$CI_ENVIRONMENT_SLUG.example.com
@@ -104,10 +105,11 @@ test_crawler_job:
 #      alias: rabbitmq-crawler
   script:
     - echo "Testing crawler in $CI_ENVIRONMENT_SLUG"
-    - pip install -r crawler/requirements.txt -r crawler/requirements-test.txt
-    - cd crawler && python -m unittest discover -s tests/ 
-    - coverage run -m unittest discover -s tests/ 
-    - coverage report --include crawler/crawler.py
+    - pip3 install -r crawler/requirements.txt -r crawler/requirements-test.txt
+    - cd crawler 
+    - python3 -m unittest discover -s tests/ 
+    - coverage3 run -m unittest discover -s tests/ 
+    - coverage3 report --include crawler/crawler.py
 
 ###############################################
 ############### Review section ##################
