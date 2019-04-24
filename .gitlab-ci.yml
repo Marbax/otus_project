@@ -35,7 +35,7 @@ build_ui_job:
   image: docker:stable
   environment:
     name: testing/$CI_COMMIT_REF_NAME
-    url: https://$CI_ENVIRONMENT_SLUG.crawler.com
+    url: https://$CI_ENVIRONMENT_SLUG.example.com
   only:
     - branches
   except:
@@ -50,7 +50,7 @@ build_crawler_job:
   image: docker:stable
   environment:
     name: testing/$CI_COMMIT_REF_NAME
-    url: https://$CI_ENVIRONMENT_SLUG.crawler.com
+    url: https://$CI_ENVIRONMENT_SLUG.example.com
   only:
     - branches
   except:
@@ -69,7 +69,7 @@ test_ui_job:
   image: python:3.5
   environment:
     name: testing/$CI_COMMIT_REF_NAME
-    url: https://$CI_ENVIRONMENT_SLUG.crawler.com
+    url: https://$CI_ENVIRONMENT_SLUG.example.com
   only:
     - branches
   except:
@@ -89,7 +89,7 @@ test_crawler_job:
   image: python:3.5
   environment:
     name: testing/$CI_COMMIT_REF_NAME
-    url: https://$CI_ENVIRONMENT_SLUG.crawler.com
+    url: https://$CI_ENVIRONMENT_SLUG.example.com
   only:
     - branches
   except:
@@ -116,14 +116,14 @@ deploy_dev_job:
     - echo 'Deploy'
   environment:
     name: dev
-    url: http://dev.crawler.com
+    url: http://dev.example.com
 
 branch review:
   stage: review
   script: echo "Deploy to $CI_ENVIRONMENT_SLUG"
   environment:
     name: branch/$CI_COMMIT_REF_NAME
-    url: http://$CI_ENVIRONMENT_SLUG.crawler.com
+    url: http://$CI_ENVIRONMENT_SLUG.example.com
   only:
     - branches
   except:
@@ -143,7 +143,7 @@ staging:
     - echo 'Deploy to staging'
   environment:
     name: stage
-    url: https://beta.crawler.com
+    url: https://beta.example.com
 
 ###############################################
 ############### Production section ##################
@@ -159,4 +159,4 @@ production:
     - echo 'Deploy to production'
   environment: #куда деплоить 
     name: production
-    url: https://crawler.com
+    url: https://example.com
