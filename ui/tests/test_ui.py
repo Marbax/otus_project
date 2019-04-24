@@ -14,7 +14,6 @@ class TestWebUI(unittest.TestCase):
 
 
     def setUp(self):
-        pprint(ui)
         self.app = ui.app.test_client()
 
     def test_empty_db(self):
