@@ -15,22 +15,12 @@ variables:
   DOCKER_DRIVER: overlay2
   PROJECT_NAME: crawler
 
-#before_script:
-#  - sudo docker info
-#  - python --version 
-#  - python3 --version
-#  - pip -V 
-#  - pip2 -V 
-#  - pip3 -V 
-#  - pip3 install --upgrade pip && pip3 install flask==0.12.2 gunicorn==19.7.1 structlog==17.2.0 pymongo==3.5.1 requests==2.18.4 prometheus_client==0.1.0 uuid beautifulsoup4==4.6.0 pika==0.11.0 coverage==4.4.2 mongomock==3.8.0
-#  - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD $CI_JOB_TOKEN $REGISTRY_URL
-
 ###############################################
 ############### Build section ##################
 ###############################################
 
 build_ui_job:
-  stage: test
+  stage: build
   image: docker:stable
   environment:
     name: testing/$CI_COMMIT_REF_NAME
@@ -45,7 +35,7 @@ build_ui_job:
     - docker build -t ${USERNAME}/ui:${UI_VER} ui/
 
 build_crawler_job:
-  stage: test
+  stage: build
   image: docker:stable
   environment:
     name: testing/$CI_COMMIT_REF_NAME
@@ -83,7 +73,7 @@ test_ui_py2:
     - coverage report --include ui/ui.py
 
 test_crawler_py2:
-  stage: build
+  stage: test
   image: python:2-alpine
   environment:
     name: testing/$CI_COMMIT_REF_NAME
@@ -123,7 +113,7 @@ test_ui_py3:
     - coverage3 report --include ui/ui.py
 
 test_crawler_py3:
-  stage: build
+  stage: test
   image: python:alpine
   environment:
     name: testing/$CI_COMMIT_REF_NAME
@@ -147,7 +137,7 @@ test_crawler_py3:
 ###############################################
 
 deploy_dev_job:
-  stage: test
+  stage: review
   script:
     - echo 'Deploy'
   environment:
@@ -155,7 +145,7 @@ deploy_dev_job:
     url: http://dev.example.com
 
 branch review:
-  stage: test
+  stage: review
   script: echo "Deploy to $CI_ENVIRONMENT_SLUG"
   environment:
     name: branch/$CI_COMMIT_REF_NAME
@@ -171,7 +161,7 @@ branch review:
 ###############################################
 
 staging:
-  stage: test
+  stage: staging
   when: manual
   only:
     - /^\d+\.\d+\.\d+/
@@ -186,7 +176,7 @@ staging:
 ###############################################
 
 production:
-  stage: test
+  stage: staging
   when: manual
   only:
     - /^\d+\.\d+\.\d+/
