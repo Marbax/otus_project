@@ -8,7 +8,7 @@ COPY tests $APP_HOME/tests
 COPY requirements.txt $APP_HOME/
 COPY requirements-test.txt $APP_HOME/
 
-RUN apk --no-cache add bash uwsgi uwsgi-python py2-pip python3 py3-pip gcc musl-dev \
+RUN apk --no-cache add bash uwsgi uwsgi-python py3-pip python3 py3-pip gcc musl-dev \
 && pip3 install --no-cache-dir -r requirements.txt \
 && pip3 install --no-cache-dir -r requirements-test.txt
 

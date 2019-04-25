@@ -10,9 +10,9 @@ RUN mkdir $APP_HOME/templates/
 COPY requirements.txt $APP_HOME/
 COPY requirements-test.txt $APP_HOME/
 
-RUN apk --no-cache add bash uwsgi uwsgi-python py2-pip curl \
-    && pip install --no-cache-dir -r requirements.txt \
-    && pip install --no-cache-dir -r requirements-test.txt
+RUN apk --no-cache add bash uwsgi uwsgi-python py3-pip curl python3 \
+    && pip3 install --no-cache-dir -r requirements.txt \
+    && pip3 install --no-cache-dir -r requirements-test.txt
 
 # flask==0.12.2 gunicorn==19.7.1 structlog==17.2.0 pymongo==3.5.1 requests==2.18.4 prometheus_client==0.1.0 uuid
 
