@@ -20,6 +20,8 @@ variables:
 build_ui_job:
   stage: build
   image: docker:stable
+  services:
+    - docker:dind
   environment:
     name: testing/$CI_COMMIT_REF_NAME
     url: https://$CI_ENVIRONMENT_SLUG.example.com
@@ -30,11 +32,16 @@ build_ui_job:
     - tags
   script:
     - echo "Building ui in $CI_ENVIRONMENT_SLUG"
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
+    - docker build -t "$CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG" .
+    - docker push "$CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG"
 #    - docker build -t ${USERNAME}/ui:${UI_VER} ui/
 
 build_crawler_job:
   stage: build
   image: docker:stable
+  services:
+    - docker:dind
   environment:
     name: testing/$CI_COMMIT_REF_NAME
     url: https://$CI_ENVIRONMENT_SLUG.example.com
@@ -44,15 +51,19 @@ build_crawler_job:
     - master
     - tags
   script:
+    - echo "Building ui in $CI_ENVIRONMENT_SLUG"
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
+    - docker build -t "$CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG" .
+    - docker push "$CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG"
     - echo "Building crawler in $CI_ENVIRONMENT_SLUG"
 #    - docker build -t ${USERNAME}/crawler:${CRAWLER_VER} crawler/
 
 ###############################################
-############### Test section ##################
+############### Test code section ##################
 ###############################################
 
 test_ui_py2:
-  stage: test
+  stage: build
   image: python:2-alpine
   environment:
     name: testing/$CI_COMMIT_REF_NAME
@@ -70,7 +81,7 @@ test_ui_py2:
     - coverage report --include ui/ui.py
 
 test_crawler_py2:
-  stage: test
+  stage: build
   image: python:2-alpine
   environment:
     name: testing/$CI_COMMIT_REF_NAME
@@ -90,8 +101,8 @@ test_crawler_py2:
 
 
 test_ui_py3:
-  stage: test
-  image: python:alpine
+  stage: build
+  image: python:3.6.0-alpine
   environment:
     name: testing/$CI_COMMIT_REF_NAME
     url: https://$CI_ENVIRONMENT_SLUG.example.com
@@ -108,8 +119,8 @@ test_ui_py3:
     - coverage3 report --include ui/ui.py
 
 test_crawler_py3:
-  stage: test
-  image: python:alpine
+  stage: build
+  image: python:3.6.0-alpine
   environment:
     name: testing/$CI_COMMIT_REF_NAME
     url: https://$CI_ENVIRONMENT_SLUG.example.com
@@ -125,6 +136,20 @@ test_crawler_py3:
     - python3 -m unittest discover -s tests/ 
     - coverage3 run -m unittest discover -s tests/ 
     - coverage3 report --include crawler/crawler.py
+
+test_ui_container:
+  stage: build
+  services:
+    - docker:dind
+  script:
+    - docker run "$CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG" python -m unittest discover -s tests/
+
+test_crawler_container:
+  stage: build
+  services:
+    - docker:dind
+  script:
+    - docker run "$CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG" python -m unittest discover -s tests/
 
 ###############################################
 ############### Review section ##################

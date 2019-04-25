@@ -9,7 +9,7 @@ services:
     restart: always
     volumes:
       - runner:/etc/gitlab-runner 
-      - /var/run/docker.sock:/run/docker.sock 
+      - /var/run/docker.sock:/var/run/docker.sock 
     networks:
       back_net:
        aliases:

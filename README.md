@@ -11,7 +11,7 @@ project work
  - [ ] Поднять в GCP docker-host с помощью gcloud
      - [ ] Придумать аналог для терраформа
  - [ ] Проверить работоспособность
- - [ ] Интегрировать с Gitlab
+ - [ x ] Интегрировать с Gitlab
  - [ ] Интегрировать с Prometheus
      - [ ] Добавить Cadvisor
      - [ ] Добавить Grafana
@@ -25,5 +25,5 @@ project work
  - [ ] Завернуть все в пакер
 
 Добавление ранера
-docker run -d --name gitlab-runner --restart always -v /srv/gitlab-runner/config:/etc/gitlab-runner -v /var/run/docker.sock:/var/run/docker.sock gitlab/gitlab-runner:latest && docker exec -it gitlab-runner gitlab-runner register --run-untagged --locked=false
+```docker run -d --name gitlab-runner --restart always -v /srv/gitlab-runner/config:/etc/gitlab-runner -v /var/run/docker.sock:/var/run/docker.sock gitlab/gitlab-runner:latest && docker exec -it gitlab-runner gitlab-runner register --run-untagged --locked=false```
 
