@@ -35,8 +35,8 @@ build_ui_job:
   script:
     - echo "Building and push the $CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG"
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" # добавляются в вебе переменные 
-    - docker build -t "$CI_REGISTRY_USER/$UI_NAME:$TAG_NAME" .$UI_NAME/
-    - docker build -t "$CI_PROJECT_PATH/$UI_NAME:$CI_COMMIT_REF_SLUG" .$UI_NAME/
+    - docker build -t "$CI_REGISTRY_USER/$UI_NAME:$TAG_NAME" $UI_NAME/
+    - docker build -t "$CI_PROJECT_PATH/$UI_NAME:$CI_COMMIT_REF_SLUG" $UI_NAME/
     - docker push "$CI_PROJECT_PATH/$UI_NAME:$CI_COMMIT_REF_SLUG"
 #    - docker build -t ${USERNAME}/ui:${UI_VER} ui/
 
@@ -56,8 +56,8 @@ build_crawler_job:
   script:
     - echo "Building and push the $CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG"
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
-    - docker build -t "$CI_REGISTRY_USER/$APP_NAME:$TAG_NAME" .$APP_NAME/
-    - docker build -t "$CI_PROJECT_PATH/$APP_NAME:$CI_COMMIT_REF_SLUG" .$APP_NAME/
+    - docker build -t "$CI_REGISTRY_USER/$APP_NAME:$TAG_NAME" $APP_NAME/
+    - docker build -t "$CI_PROJECT_PATH/$APP_NAME:$CI_COMMIT_REF_SLUG" $APP_NAME/
     - docker push "$CI_PROJECT_PATH/:$CI_COMMIT_REF_SLUG"
 #    - docker build -t ${USERNAME}/crawler:${CRAWLER_VER} crawler/
 
@@ -145,6 +145,7 @@ test_ui_container:
   services:
     - docker:dind
   script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
     - docker run "$CI_REGISTRY_USER/$UI_NAME:$TAG_NAME" python -m unittest discover -s tests/
     - docker run "$CI_PROJECT_PATH/$UI_NAME:$CI_COMMIT_REF_SLUG" python -m unittest discover -s tests/
 
@@ -153,6 +154,7 @@ test_crawler_container:
   services:
     - docker:dind
   script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
     - docker run "$CI_REGISTRY_USER/$APP_NAME:$TAG_NAME" python -m unittest discover -s tests/
     - docker run "$CI_PROJECT_PATH/$APP_NAME:$CI_COMMIT_REF_SLUG" python -m unittest discover -s tests/
 
