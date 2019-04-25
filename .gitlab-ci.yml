@@ -33,8 +33,8 @@ build_ui_job:
   script:
     - echo "Building and push the $CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG"
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
-    - docker build -t "$CI_PROJECT_PATH/ui/Dockerfile:$CI_COMMIT_REF_SLUG" .
-    - docker push "$CI_PROJECT_PATH/ui/Dockerfile:$CI_COMMIT_REF_SLUG"
+    - docker build -t "$CI_PROJECT_PATH/:$CI_COMMIT_REF_SLUG" .
+    - docker push "$CI_PROJECT_PATH/:$CI_COMMIT_REF_SLUG"
 #    - docker build -t ${USERNAME}/ui:${UI_VER} ui/
 
 build_crawler_job:
@@ -53,8 +53,8 @@ build_crawler_job:
   script:
     - echo "Building and push the $CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG"
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
-    - docker build -t "$CI_PROJECT_PATH/crawler/Dockerfile:$CI_COMMIT_REF_SLUG" .
-    - docker push "$CI_PROJECT_PATH/crawler/Dockerfile:$CI_COMMIT_REF_SLUG"
+    - docker build -t "$CI_PROJECT_PATH/:$CI_COMMIT_REF_SLUG" .
+    - docker push "$CI_PROJECT_PATH/:$CI_COMMIT_REF_SLUG"
 #    - docker build -t ${USERNAME}/crawler:${CRAWLER_VER} crawler/
 
 ###############################################
@@ -62,7 +62,7 @@ build_crawler_job:
 ###############################################
 
 test_ui_py2:
-  stage: build
+  stage: test
   image: python:2-alpine
   environment:
     name: testing/$CI_COMMIT_REF_NAME
@@ -100,7 +100,7 @@ test_crawler_py2:
 
 
 test_ui_py3:
-  stage: build
+  stage: test
   image: python:3.6.0-alpine
   environment:
     name: testing/$CI_COMMIT_REF_NAME
@@ -118,7 +118,7 @@ test_ui_py3:
     - coverage3 report --include ui/ui.py
 
 test_crawler_py3:
-  stage: build
+  stage: test
   image: python:3.6.0-alpine
   environment:
     name: testing/$CI_COMMIT_REF_NAME
@@ -141,14 +141,14 @@ test_ui_container:
   services:
     - docker:dind
   script:
-    - docker run "$CI_PROJECT_PATH/ui/Dockerfile:$CI_COMMIT_REF_SLUG" python -m unittest discover -s tests/
+    - docker run "$CI_PROJECT_PATH/ui:$CI_COMMIT_REF_SLUG" python -m unittest discover -s tests/
 
 test_crawler_container:
   stage: build
   services:
     - docker:dind
   script:
-    - docker run "$CI_PROJECT_PATH/crawler/Dockerfile:$CI_COMMIT_REF_SLUG" python -m unittest discover -s tests/
+    - docker run "$CI_PROJECT_PATH/crawler:$CI_COMMIT_REF_SLUG" python -m unittest discover -s tests/
 
 ###############################################
 ############### Review section ##################
