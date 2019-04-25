@@ -78,7 +78,7 @@ test_ui_py2:
     - coverage report --include ui/ui.py
 
 test_crawler_py2:
-  stage: build
+  stage: test
   image: python:2-alpine
   environment:
     name: testing/$CI_COMMIT_REF_NAME
@@ -135,22 +135,22 @@ test_crawler_py3:
     - coverage3 report --include crawler/crawler.py
 
 test_ui_container:
-  stage: build
+  stage: test
   services:
     - docker:dind
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
-#    - docker run "$CI_REGISTRY_USER/$UI_NAME:$TAG_NAME" python -m unittest discover -s tests/
-    - docker run "$CI_PROJECT_PATH/$UI_NAME:$CI_COMMIT_REF_SLUG" python -m unittest discover -s tests/
+    - docker pull "$CI_REGISTRY_USER/$UI_NAME:$TAG_NAME"
+    - docker run "$CI_REGISTRY_USER/$UI_NAME:$TAG_NAME" python -m unittest discover -s tests/
 
 test_crawler_container:
-  stage: build
+  stage: test
   services:
     - docker:dind
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
-#    - docker run "$CI_REGISTRY_USER/$APP_NAME:$TAG_NAME" python -m unittest discover -s tests/
-    - docker run "$CI_PROJECT_PATH/$APP_NAME:$CI_COMMIT_REF_SLUG" python -m unittest discover -s tests/
+    - docker pull "$CI_REGISTRY_USER/$APP_NAME:$TAG_NAME"
+    - docker run "$CI_REGISTRY_USER/$APP_NAME:$TAG_NAME" python -m unittest discover -s tests/
 
 ###############################################
 ############### Review section ##################
