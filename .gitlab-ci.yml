@@ -31,10 +31,10 @@ build_ui_job:
     - master
     - tags
   script:
-    - echo "Building the $CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG and push to $CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG"
+    - echo "Building and push the $CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG"
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
-    - docker build -t "$CI_PROJECT_PATH/ui:$CI_COMMIT_REF_SLUG" .
-    - docker push "$CI_PROJECT_PATH/ui:$CI_COMMIT_REF_SLUG"
+    - docker build -t "$CI_PROJECT_PATH/ui/:$CI_COMMIT_REF_SLUG" .
+    - docker push "$CI_PROJECT_PATH/ui/:$CI_COMMIT_REF_SLUG"
 #    - docker build -t ${USERNAME}/ui:${UI_VER} ui/
 
 build_crawler_job:
@@ -51,10 +51,10 @@ build_crawler_job:
     - master
     - tags
   script:
-    - echo "Building the $CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG and push to $CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG"
+    - echo "Building and push the $CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG"
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
-    - docker build -t "$CI_PROJECT_PATH/crawler:$CI_COMMIT_REF_SLUG" .
-    - docker push "$CI_PROJECT_PATH/crawler:$CI_COMMIT_REF_SLUG"
+    - docker build -t "$CI_PROJECT_PATH/crawler/:$CI_COMMIT_REF_SLUG" .
+    - docker push "$CI_PROJECT_PATH/crawler/:$CI_COMMIT_REF_SLUG"
 #    - docker build -t ${USERNAME}/crawler:${CRAWLER_VER} crawler/
 
 ###############################################
