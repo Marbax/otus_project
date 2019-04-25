@@ -24,14 +24,14 @@ build_ui_job:
     - docker:dind
   environment:
     name: testing/$CI_COMMIT_REF_NAME
-    url: https://$CI_ENVIRONMENT_SLUG.example.com
+    url: https://$CI_ENVIRONMENT_SLUG.192.168.88.12
   only:
     - branches
   except:
     - master
     - tags
   script:
-    - echo "Building ui in $CI_ENVIRONMENT_SLUG"
+    - echo "Building the $CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG and push to $CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG"
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
     - docker build -t "$CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG" .
     - docker push "$CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG"
@@ -44,18 +44,17 @@ build_crawler_job:
     - docker:dind
   environment:
     name: testing/$CI_COMMIT_REF_NAME
-    url: https://$CI_ENVIRONMENT_SLUG.example.com
+    url: https://$CI_ENVIRONMENT_SLUG.192.168.88.12
   only:
     - branches
   except:
     - master
     - tags
   script:
-    - echo "Building ui in $CI_ENVIRONMENT_SLUG"
+    - echo "Building the $CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG and push to $CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG"
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
     - docker build -t "$CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG" .
     - docker push "$CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG"
-    - echo "Building crawler in $CI_ENVIRONMENT_SLUG"
 #    - docker build -t ${USERNAME}/crawler:${CRAWLER_VER} crawler/
 
 ###############################################
@@ -67,7 +66,7 @@ test_ui_py2:
   image: python:2-alpine
   environment:
     name: testing/$CI_COMMIT_REF_NAME
-    url: https://$CI_ENVIRONMENT_SLUG.example.com
+    url: https://$CI_ENVIRONMENT_SLUG.192.168.88.12
   only:
     - branches
   except:
@@ -85,7 +84,7 @@ test_crawler_py2:
   image: python:2-alpine
   environment:
     name: testing/$CI_COMMIT_REF_NAME
-    url: https://$CI_ENVIRONMENT_SLUG.example.com
+    url: https://$CI_ENVIRONMENT_SLUG.192.168.88.12
   only:
     - branches
   except:
@@ -93,7 +92,7 @@ test_crawler_py2:
     - tags
   script:
     - pip install --upgrade pip
-    - pip install -r crawler/requirements.txt -r crawler/requirements-test.txt functools
+    - pip install -r crawler/requirements.txt -r crawler/requirements-test.txt
     - cd crawler 
     - python -m unittest discover -s tests/ 
     - coverage run -m unittest discover -s tests/ 
@@ -105,7 +104,7 @@ test_ui_py3:
   image: python:3.6.0-alpine
   environment:
     name: testing/$CI_COMMIT_REF_NAME
-    url: https://$CI_ENVIRONMENT_SLUG.example.com
+    url: https://$CI_ENVIRONMENT_SLUG.192.168.88.12
   only:
     - branches
   except:
@@ -123,7 +122,7 @@ test_crawler_py3:
   image: python:3.6.0-alpine
   environment:
     name: testing/$CI_COMMIT_REF_NAME
-    url: https://$CI_ENVIRONMENT_SLUG.example.com
+    url: https://$CI_ENVIRONMENT_SLUG.192.168.88.12
   only:
     - branches
   except:
@@ -161,14 +160,14 @@ deploy_dev_job:
     - echo 'Deploy'
   environment:
     name: dev
-    url: http://dev.example.com
+    url: http://dev.192.168.88.12
 
 branch review:
   stage: review
   script: echo "Deploy to $CI_ENVIRONMENT_SLUG"
   environment:
     name: branch/$CI_COMMIT_REF_NAME
-    url: http://$CI_ENVIRONMENT_SLUG.example.com
+    url: http://$CI_ENVIRONMENT_SLUG.192.168.88.12
   only:
     - branches
   except:
@@ -188,7 +187,7 @@ staging:
     - echo 'Deploy to staging'
   environment:
     name: stage
-    url: https://beta.example.com
+    url: https://beta.192.168.88.12
 
 ###############################################
 ############### Production section ##################
@@ -204,4 +203,4 @@ production:
     - echo 'Deploy to production'
   environment: #куда деплоить 
     name: production
-    url: https://example.com
+    url: https://192.168.88.12
