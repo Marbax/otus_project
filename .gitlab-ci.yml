@@ -11,8 +11,8 @@ stages:
 variables:
   REGISTRY_URL: http://192.168.88.12/
   DOCKER_DRIVER: overlay2
-  APP_NAME: crawler-app
-  UI_NAME: crawler-ui
+  APP_NAME: crawler-app # и имя директории тоже
+  UI_NAME: crawler-ui # и имя директории тоже
   TAG_NAME: test
 
 ###############################################
@@ -30,7 +30,7 @@ build_ui_job:
   only:
     changes:
       - .gitlab-ci.yml
-      - ui
+      - $UI_NAME
   except:
     - master
   script:
@@ -50,7 +50,7 @@ build_crawler_job:
   only:
     changes:
       - .gitlab-ci.yml
-      - crawler
+      - $APP_NAME
   except:
     - master
   script:
