@@ -30,12 +30,12 @@ test_ui_py3:
     name: $TAG_NAME/$CI_COMMIT_REF_NAME
     url: $ENV_URL/$CI_ENVIRONMENT_SLUG
   only:
-    changes:
+    changes: #не понимает переменные окружения 
       - .gitlab-ci.yml
-      - $UI_NAME/ui
-      - $UI_NAME/tests
+      - crawler-ui/ui
+      - crawler-ui/tests
       - crawler-ui/requirements.txt
-      - $UI_NAME/requirements-test.txt
+      - crawler-ui/requirements-test.txt
   except:
     - master
   script:
@@ -52,12 +52,12 @@ test_crawler_py3:
     name: $TAG_NAME/$CI_COMMIT_REF_NAME
     url: $ENV_URL/$CI_ENVIRONMENT_SLUG
   only:
-    changes:
+    changes: 
       - .gitlab-ci.yml
-      - $APP_NAME/crawler
-      - $APP_NAME/tests
-      - $APP_NAME/requirements.txt
-      - $APP_NAME/requirements-test.txt
+      - crawler-app/crawler
+      - crawler-app/tests
+      - crawler-app/requirements.txt
+      - crawler-app/requirements-test.txt
   except:
     - master
   script:
@@ -83,7 +83,7 @@ build_ui_job:
   only:
     changes:
       - .gitlab-ci.yml
-      - $UI_NAME/*
+      - crawler-ui/*
   except:
     - master
   script:
@@ -103,7 +103,7 @@ build_crawler_job:
   only:
     changes:
       - .gitlab-ci.yml
-      - $APP_NAME/*
+      - crawler-app/*
   except:
     - master
   script:
