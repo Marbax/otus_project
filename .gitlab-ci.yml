@@ -34,7 +34,7 @@ test_ui_py3:
       - .gitlab-ci.yml
       - $UI_NAME/ui
       - $UI_NAME/tests
-      - $UI_NAME/requirements.txt
+      - crawler-ui/requirements.txt
       - $UI_NAME/requirements-test.txt
   except:
     - master
