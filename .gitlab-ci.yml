@@ -30,7 +30,12 @@ test_ui_py3:
     name: $TAG_NAME/$CI_COMMIT_REF_NAME
     url: $ENV_URL/$CI_ENVIRONMENT_SLUG
   only:
-    - branches
+    changes:
+      - .gitlab-ci.yml
+      - $UI_NAME/ui
+      - $UI_NAME/tests
+      - $UI_NAME/requirements.txt
+      - $UI_NAME/requirements-test.txt
   except:
     - master
   script:
@@ -47,7 +52,12 @@ test_crawler_py3:
     name: $TAG_NAME/$CI_COMMIT_REF_NAME
     url: $ENV_URL/$CI_ENVIRONMENT_SLUG
   only:
-    - branches
+    changes:
+      - .gitlab-ci.yml
+      - $APP_NAME/crawler
+      - $APP_NAME/tests
+      - $APP_NAME/requirements.txt
+      - $APP_NAME/requirements-test.txt
   except:
     - master
   script:
@@ -114,7 +124,7 @@ test_ui_container:
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
     - docker pull "$CI_REGISTRY_USER/$UI_NAME:$TAG_NAME"
-    - docker run --rm "$CI_REGISTRY_USER/$UI_NAME:$TAG_NAME" /bin/bash -c "python3 -m unittest discover -s tests/ && coverage3 run -m unittest discover -s tests/ && coverage3 report --include cui/ui.py"
+    - docker run --rm "$CI_REGISTRY_USER/$UI_NAME:$TAG_NAME" /bin/bash -c "python3 -m unittest discover -s tests/ && coverage3 run -m unittest discover -s tests/ && coverage3 report --include ui/ui.py"
 
 test_crawler_container:
   stage: test
