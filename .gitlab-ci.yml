@@ -2,6 +2,7 @@
 image: docker:stable
 
 stages:
+  - test_code
   - build
   - test
   - review
@@ -10,10 +11,52 @@ stages:
 
 variables:
   REGISTRY_URL: http://192.168.88.12/
+  ENV_URL: http://192.168.88.12
+  DEV_ENV_URL: http://192.168.88.12
+  PROD_ENV_URL: http://192.168.88.12
   DOCKER_DRIVER: overlay2
   APP_NAME: crawler-app # и имя директории тоже
   UI_NAME: crawler-ui # и имя директории тоже
   TAG_NAME: test
+
+###############################################
+############### Test code section ##################
+###############################################
+
+test_ui_py3:
+  stage: test_code
+  image: python:3.6.0-alpine
+  environment:
+    name: $TAG_NAME/$CI_COMMIT_REF_NAME
+    url: $ENV_URL/$CI_ENVIRONMENT_SLUG
+  only:
+    - branches
+  except:
+    - master
+  script:
+    - pip3 install -r $UI_NAME/requirements.txt -r $UI_NAME/requirements-test.txt
+    - cd $UI_NAME
+    - python3 -m unittest discover -s tests/
+    - coverage3 run -m unittest discover -s tests/
+    - coverage3 report --include ui/ui.py
+
+test_crawler_py3:
+  stage: test_code
+  image: python:3.6.0-alpine
+  environment:
+    name: $TAG_NAME/$CI_COMMIT_REF_NAME
+    url: $ENV_URL/$CI_ENVIRONMENT_SLUG
+  only:
+    - branches
+  except:
+    - master
+  script:
+    - pip3 install --upgrade pip
+    - pip3 install -r $APP_NAME/requirements.txt -r $APP_NAME/requirements-test.txt
+    - cd $APP_NAME
+    - python3 -m unittest discover -s tests/ 
+    - coverage3 run -m unittest discover -s tests/ 
+    - coverage3 report --include crawler/crawler.py
 
 ###############################################
 ############### Build section ##################
@@ -25,8 +68,8 @@ build_ui_job:
   services:
     - docker:dind
   environment:
-    name: testing/$CI_COMMIT_REF_NAME
-    url: https://$CI_ENVIRONMENT_SLUG.192.168.88.12
+    name: $TAG_NAME/$CI_COMMIT_REF_NAME
+    url: $ENV_URL/$CI_ENVIRONMENT_SLUG
   only:
     changes:
       - .gitlab-ci.yml
@@ -45,8 +88,8 @@ build_crawler_job:
   services:
     - docker:dind
   environment:
-    name: testing/$CI_COMMIT_REF_NAME
-    url: https://$CI_ENVIRONMENT_SLUG.192.168.88.12
+    name: $TAG_NAME/$CI_COMMIT_REF_NAME
+    url: $ENV_URL/$CI_ENVIRONMENT_SLUG
   only:
     changes:
       - .gitlab-ci.yml
@@ -59,84 +102,10 @@ build_crawler_job:
     - docker build -t "$CI_REGISTRY_USER/$APP_NAME:$TAG_NAME" $APP_NAME/
     - docker push "$CI_REGISTRY_USER/$APP_NAME:$TAG_NAME"
 
-###############################################
-############### Test code section ##################
-###############################################
 
-#test_ui_py2:
-#  stage: test
-#  image: python:2-alpine
-#  environment:
-#    name: testing/$CI_COMMIT_REF_NAME
-#    url: https://$CI_ENVIRONMENT_SLUG.192.168.88.12
-#  only:
-#    - branches
-#  except:
-#    - master
-#    - tags
-#  script:
-#    - pip install -r ui/requirements.txt -r ui/requirements-test.txt
-#    - cd ui 
-#    - python -m unittest discover -s tests/
-#    - coverage run -m unittest discover -s tests/
-#    - coverage report --include ui/ui.py
-
-#test_crawler_py2:
-#  stage: test
-#  image: python:2-alpine
-#  environment:
-#    name: testing/$CI_COMMIT_REF_NAME
-#    url: https://$CI_ENVIRONMENT_SLUG.192.168.88.12
-#  only:
-#    - branches
-#  except:
-#    - master
-#    - tags
-#  script:
-#    - pip install --upgrade pip
-#    - pip install -r crawler/requirements.txt -r crawler/requirements-test.txt
-#    - cd crawler 
-#    - python -m unittest discover -s tests/ 
-#    - coverage run -m unittest discover -s tests/ 
-#    - coverage report --include crawler/crawler.py
-
-
-test_ui_py3:
-  stage: test
-  image: python:3.6.0-alpine
-  environment:
-    name: testing/$CI_COMMIT_REF_NAME
-    url: https://$CI_ENVIRONMENT_SLUG.192.168.88.12
-  only:
-    - branches
-  except:
-    - master
-    - tags
-  script:
-    - pip3 install -r $UI_NAME/requirements.txt -r $UI_NAME/requirements-test.txt
-    - cd $UI_NAME
-    - python3 -m unittest discover -s tests/
-    - coverage3 run -m unittest discover -s tests/
-    - coverage3 report --include ui/ui.py
-
-test_crawler_py3:
-  stage: test
-  image: python:3.6.0-alpine
-  environment:
-    name: testing/$CI_COMMIT_REF_NAME
-    url: https://$CI_ENVIRONMENT_SLUG.192.168.88.12
-  only:
-    - branches
-  except:
-    - master
-    - tags
-  script:
-    - pip3 install --upgrade pip
-    - pip3 install -r $APP_NAME/requirements.txt -r $APP_NAME/requirements-test.txt
-    - cd $APP_NAME
-    - python3 -m unittest discover -s tests/ 
-    - coverage3 run -m unittest discover -s tests/ 
-    - coverage3 report --include crawler/crawler.py
+#########################################################
+############### Test container section ##################
+#########################################################
 
 test_ui_container:
   stage: test
@@ -170,19 +139,18 @@ deploy_dev_job:
     - echo 'Deploy'
   environment:
     name: dev
-    url: http://dev.192.168.88.12
+    url: $DEV_ENV_URL/
 
 branch review:
   stage: review
   script: echo "Deploy to $CI_ENVIRONMENT_SLUG"
   environment:
     name: branch/$CI_COMMIT_REF_NAME
-    url: http://$CI_ENVIRONMENT_SLUG.192.168.88.12
+    url: $ENV_URL/$CI_ENVIRONMENT_SLUG
   only:
     - branches
   except:
     - master
-    - tags
 
 ###############################################
 ############### Staging section ##################
@@ -197,7 +165,7 @@ staging:
     - echo 'Deploy to staging'
   environment:
     name: stage
-    url: https://beta.192.168.88.12
+    url: $ENV_URL/beta
 
 ###############################################
 ############### Production section ##################
@@ -213,4 +181,4 @@ production:
     - echo 'Deploy to production'
   environment: #куда деплоить 
     name: production
-    url: https://192.168.88.12
+    url: $PROD_ENV_URL/
