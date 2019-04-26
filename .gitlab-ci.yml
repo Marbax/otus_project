@@ -83,7 +83,7 @@ build_ui_job:
   only:
     changes:
       - .gitlab-ci.yml
-      - $UI_NAME
+      - $UI_NAME/*
   except:
     - master
   script:
@@ -103,7 +103,7 @@ build_crawler_job:
   only:
     changes:
       - .gitlab-ci.yml
-      - $APP_NAME
+      - $APP_NAME/*
   except:
     - master
   script:
