@@ -115,8 +115,8 @@ test_ui_container:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
     - docker pull "$CI_REGISTRY_USER/$UI_NAME:$TAG_NAME"
     - docker run "$CI_REGISTRY_USER/$UI_NAME:$TAG_NAME" python3 -m unittest discover -s tests/
-    - docker exec -it "$UI_NAME:$TAG_NAME" coverage3 run -m unittest discover -s tests/
-    - docker exec -it "$UI_NAME:$TAG_NAME" coverage3 report --include ui/ui.py
+    - docker run "$CI_REGISTRY_USER/$UI_NAME:$TAG_NAME" coverage3 run -m unittest discover -s tests/
+    - docker run "$CI_REGISTRY_USER/$UI_NAME:$TAG_NAME" coverage3 report --include ui/ui.py
 
 test_crawler_container:
   stage: test
@@ -126,8 +126,8 @@ test_crawler_container:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
     - docker pull "$CI_REGISTRY_USER/$APP_NAME:$TAG_NAME"
     - docker run "$CI_REGISTRY_USER/$APP_NAME:$TAG_NAME" python3 -m unittest discover -s tests/
-    - docker exec -it "$APP_NAME:$TAG_NAME" coverage3 run -m unittest discover -s tests/
-    - docker exec -it "$APP_NAME:$TAG_NAME" coverage3 report --include crawler/crawler.py
+    - docker run "$CI_REGISTRY_USER/$APP_NAME:$TAG_NAME" coverage3 run -m unittest discover -s tests/
+    - docker run "$CI_REGISTRY_USER/$APP_NAME:$TAG_NAME" coverage3 report --include crawler/crawler.py
 
 ###############################################
 ############### Review section ##################
