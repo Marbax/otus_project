@@ -25,5 +25,18 @@ project work
  - [ ] Завернуть все в пакер
 
 Добавление ранера
-```docker run -d --name gitlab-runner --restart always -v /srv/gitlab-runner/config:/etc/gitlab-runner -v /var/run/docker.sock:/var/run/docker.sock gitlab/gitlab-runner:latest && docker exec -it gitlab-runner gitlab-runner register --run-untagged --locked=false```
+```
+docker exec -it gitlab-runner gitlab-runner register \
+  --non-interactive \
+  --url "http://192.168.88.12/" \
+  --registration-token "pn_6afCNnncRD-5P4Jnv" \
+  --executor "docker" \
+  --docker-image alpine:latest \
+  --description "gitlab-runner-01" \
+  --request-concurrency 3 \
+  --tag-list "docker,gitlab,gitlab-runner" \
+  --run-untagged="true" \
+  --locked="false" \
+  --docker-privileged
+  ```
 
