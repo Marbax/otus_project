@@ -19,8 +19,7 @@ services:
 
   ui:
     env_file: .env
-    image: ${USERNAME}/ui:${UI_VER}
-    #build: ./ui
+    image: ${USERNAME}/crawler-ui:${UI_VER}
     restart: always
     ports:
       - ${HOST_PORT}:${APP_PORT}/tcp
@@ -43,7 +42,7 @@ services:
 
   crawler:
     env_file: .env
-    image: ${USERNAME}/crawler:${CRAWLER_VER}
+    image: ${USERNAME}/crawler-app:${CRAWLER_VER}
     restart: always
     networks:
       back_net:
