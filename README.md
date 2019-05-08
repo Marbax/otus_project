@@ -3,7 +3,8 @@ project work
 
 
 <details><summary> План </summary><p>
- - [ x ] Описать докерфайл для crawler-app
+
+ - [x] Описать докерфайл для crawler-app
  - [x] Описать докерфайл для crawler-гш
  - [x] Найти контейнер MongoDB 
  - [x] Найти контейнер RabbitMQ
@@ -21,6 +22,7 @@ project work
      - [x]  Kibana
      - [ ]  Zipkin (не видит сервисов)
  - [x] Завернуть все в пакер
+
 </p></details>
 
 <details><summary> Требования для хоста еластики(если не через пакер) </summary><p>
@@ -40,17 +42,21 @@ project work
 - ```fluentd/``` Сборщик логов fluentd с докерфайлом и конфигом
 - ```packer/``` Описаный backed образ платформы
 - ```terraform/``` Terraform манифест для поднятия платформы в GCP
+
 </p></details>
 
 
 <details><summary>Добавление ранера</summary><p>
+
 ```
 docker run -d --name gitlab-runner --restart always \
 -v /srv/gitlab-runner/config:/etc/gitlab-runner \
 -v /var/run/docker.sock:/var/run/docker.sock \
 gitlab/gitlab-runner:latest
 ```
+
 - Урл и токен можно посмотреть в Ваш_проект_на_гитлабе -> Settings -> CI/CD -> Runners
+
 ```
 docker exec -it gitlab-runner gitlab-runner register \
   --non-interactive \
@@ -70,6 +76,7 @@ docker exec -it gitlab-runner gitlab-runner register \
 
 
 <details><summary> Правила фаерволла для доступа к сервисам </summary><p>
+
 (Правила согласно открытым портам контейнеров ,указаным в env файлах)
 
 ```
@@ -109,7 +116,6 @@ gcloud compute firewall-rules create "tcp-ssh-gitlab-rule" --allow tcp:2222 \
 gcloud compute firewall-rules create "tcp-alertmanager-rule" --allow tcp:9093 \
       --source-ranges="93.126.79.67/32" \
       --description="HTTP access for alertmanager"
-
 ```
 
 </p></details>
