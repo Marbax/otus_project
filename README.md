@@ -3,7 +3,7 @@ project work
 
 
 <details><summary> План </summary><p>
- - [x] Описать докерфайл для crawler-app
+ - [ x ] Описать докерфайл для crawler-app
  - [x] Описать докерфайл для crawler-гш
  - [x] Найти контейнер MongoDB 
  - [x] Найти контейнер RabbitMQ
