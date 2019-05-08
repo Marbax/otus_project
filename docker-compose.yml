@@ -4,7 +4,6 @@ version: '3.3'
 services:
 
   mongo_db:
-    env_file: .env
     image: mongo:${MONGO_VER}
     restart: always
     volumes:
@@ -13,54 +12,57 @@ services:
       back_net:
        aliases:
        - mongo_db
-       #- rabbit_mq_db
-    environment:
-      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: service.mongo-db
+#    environment:
+#      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
 
-  ui:
-    env_file: .env
-    image: ${USERNAME}/crawler-ui:${UI_VER}
+  crawler-ui:
+    image: ${DOCKER_USER}/crawler-ui:${UI_VER}
     restart: always
     ports:
-      - ${HOST_PORT}:${APP_PORT}/tcp
+      - ${UI_HOST_PORT}:${UI_APP_PORT}/tcp
     networks:
       back_net:
        aliases:
-       - ui
+       - crawler-ui
       front_net:
        aliases:
-       - ui
-    #logging:
-    #  driver: "fluentd"
-    #  options:
-    #    fluentd-address: localhost:24224
-    #    tag: service.ui
-    environment:
-      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
+       - crawler-ui
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: service.crawler-ui
+#    environment:
+#      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
     depends_on:
       - mongo_db
 
-  crawler:
-    env_file: .env
-    image: ${USERNAME}/crawler-app:${CRAWLER_VER}
+  crawler-app:
+    image: ${DOCKER_USER}/crawler-app:${CRAWLER_VER}
     restart: always
+    ports:
+      - ${APP_HOST_PORT}:${APP_APP_PORT}/tcp
     networks:
       back_net:
        aliases:
-       - crawler
-      front_net:
-       aliases:
-       - crwawler
-    #logging:
-    #  driver: "fluentd"
-    #  options:
-    #    fluentd-address: localhost:24224
-    #    tag: service.crawler
-    environment:
-      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
+       - crawler-app
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: service.crawler-app
+#    environment:
+#      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
+    depends_on:
+      - mongo_db
+      - rabbit_mq
 
   rabbit_mq:
-    env_file: .env
     image: rabbitmq:${RABBIT_MQ_VER}
     restart: always
     hostname: ${QUEUE_NAME}}
@@ -70,25 +72,28 @@ services:
       back_net:
        aliases:
        - rabbit_mq
-      #front_net:
-       #aliases:
-       #- crawler
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: service.rabbit-mq
     environment:
-      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
+#      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
       - RABBITMQ_DEFAULT_USER=${RABBIT_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBIT_PASSWORD}
 
 volumes:
   mongo_db:
   rabbit_mq:
+
 networks:
   back_net:
     driver: bridge
     ipam:
       config:
-        - subnet: 10.69.96.0/24
+        - subnet: 10.0.10.0/24
   front_net:
     driver: bridge
     ipam:
       config:
-        - subnet: 10.96.69.0/24
+        - subnet: 10.0.11.0/24

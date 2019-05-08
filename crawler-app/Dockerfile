@@ -31,5 +31,7 @@ ENV CHECK_INTERVAL 10
 # адреса которые будут исключены из обхода записанные через запятую в формате простых регулярных выражений.
 ENV EXCLUDE_URLS='.*github.com'
 
+EXPOSE 8000
+
 CMD python3 -u crawler/crawler.py https://vitkhab.github.io/search_engine_test_site/
 #CMD ["python3", "-u", "crawler/crawler.py", "https://vitkhab.github.io/search_engine_test_site/"]

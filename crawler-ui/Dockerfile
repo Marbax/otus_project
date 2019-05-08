@@ -5,8 +5,6 @@ WORKDIR $APP_HOME
 
 COPY ui $APP_HOME
 COPY tests $APP_HOME/tests
-#RUN mkdir $APP_HOME/templates/
-#COPY ui/templates/* $APP_HOME/templates/
 COPY requirements.txt $APP_HOME/
 COPY requirements-test.txt $APP_HOME/
 
