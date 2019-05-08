@@ -10,10 +10,10 @@ stages:
   - production
 
 variables:
-  REGISTRY_URL: http://192.168.88.12/
-  ENV_URL: http://192.168.88.12
-  DEV_ENV_URL: http://192.168.88.12
-  PROD_ENV_URL: http://192.168.88.12
+  REGISTRY_URL: http://35.204.193.63:8888/
+  ENV_URL: http://35.204.193.63:8888
+  DEV_ENV_URL: http://35.204.193.63:8888
+  PROD_ENV_URL: http://35.204.193.63:8888
   DOCKER_DRIVER: overlay2
   APP_NAME: crawler-app # и имя директории тоже
   UI_NAME: crawler-ui # и имя директории тоже

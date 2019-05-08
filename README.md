@@ -8,7 +8,7 @@ project work
  - [x] Найти контейнер MongoDB 
  - [x] Найти контейнер RabbitMQ
  - [x] Написать docker-compose с зависимостями сервисов
- - [ ] Поднять в GCP docker-host с помощью gcloud
+ - [x] Поднять в GCP docker-host с помощью gcloud
  - [x] Проверить работоспособность
  - [x] Интегрировать с Gitlab
  - [x] Интегрировать с Prometheus
@@ -20,33 +20,37 @@ project work
      - [x]  Elasticsearch 
      - [x]  Kibana
      - [ ]  Zipkin (не видит сервисов)
-
- - [ ] Завернуть все в пакер
+ - [x] Завернуть все в пакер
 </p></details>
 
-
-<details><summary> Требования для хоста еластики </summary><p>
+<details><summary> Требования для хоста еластики(если не через пакер) </summary><p>
 
 - Нужен увеличеный размер памяти под процесс по требованиям джавы (78 ошибка):
  - до ребута ```sudo sysctl -w vm.max_map_count=262144```
  - навсегда ```sudo echo "vm.max_map_count=262144" >> /etc/sysctl.conf```
-
-- Структуру репозитория менять не желательно во измежание ошибок 
-
-- docker-compose можно ставить из apt (проверено на версии 1.17.1)
 
 </p></details>
 
 
 <details><summary> Описание репозитория </summary><p>
 
-- Приложение вместе с докерфайлом по пути ```crawler-app/```
-- Веб интерфейс приложения вместе с докерфайлом по пути ```crawler-ui/```
-
+- ```crawler-app/``` Приложение вместе с докерфайлом
+- ```crawler-ui/``` Веб интерфейс приложения вместе с докерфайлом
+- ```prometheus/``` Система мониторинга с докерфайлами и конфигами
+- ```fluentd/``` Сборщик логов fluentd с докерфайлом и конфигом
+- ```packer/``` Описаный backed образ платформы
+- ```terraform/``` Terraform манифест для поднятия платформы в GCP
 </p></details>
 
 
 <details><summary>Добавление ранера</summary><p>
+```
+docker run -d --name gitlab-runner --restart always \
+-v /srv/gitlab-runner/config:/etc/gitlab-runner \
+-v /var/run/docker.sock:/var/run/docker.sock \
+gitlab/gitlab-runner:latest
+```
+- Урл и токен можно посмотреть в Ваш_проект_на_гитлабе -> Settings -> CI/CD -> Runners
 ```
 docker exec -it gitlab-runner gitlab-runner register \
   --non-interactive \
@@ -60,22 +64,7 @@ docker exec -it gitlab-runner gitlab-runner register \
   --run-untagged="true" \
   --locked="false" \
   --docker-privileged
-  ```
-</p></details>
-
-
-<details><summary> Создание хоста для платформы </summary><p>
 ```
-docker-machine create --driver google \
-    --google-project docker-231712 \
-    --google-machine-image https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/family/ubuntu-1804-lts \
-    --google-disk-size 100 \
-    --google-zone europe-west1-b \
-    --google-tags http-server,crawler,app-platform \
-    --google-machine-type n1-standard-4 \
-    crawler-platform
-```
-- Переключение окружения докера на удаленное ```eval $(docker-machine env crawler-platform)```
 
 </p></details>
 
@@ -84,13 +73,10 @@ docker-machine create --driver google \
 (Правила согласно открытым портам контейнеров ,указаным в env файлах)
 
 ```
+- Правило для доступа к docker-machine ,если создается через нее, в других случаях надобности в нем нет
 gcloud compute firewall-rules create "tcp-host-rule" --allow tcp:2376 \
       --source-ranges="93.126.79.67/32" \
       --description="Access to docker-machine host"
-
-gcloud compute firewall-rules create "tcp-ui-http-rule" --allow tcp:443 \
-      --source-ranges="0.0.0.0/0" \
-      --description="HTTPs access for aplication ui"
 
 gcloud compute firewall-rules create "tcp-ui-https-rule" --allow tcp:80 \
       --source-ranges="0.0.0.0/0" \
@@ -125,5 +111,32 @@ gcloud compute firewall-rules create "tcp-alertmanager-rule" --allow tcp:9093 \
       --description="HTTP access for alertmanager"
 
 ```
+
 </p></details>
 
+<details><summary> Использование </summary><p>
+
+### Для использования нужны :
+- Docker version 17.05.0-ce (минимум,подойдет и версия из apt)
+- docker-compose version 1.17.1 (минимум,подойдет и версия из apt)
+- Нужно быть зарегестрированым в dockerhub
+- packer version 1.3.3 (минимум)
+- Terraform v0.11.9
+- У packer и terraform должен быть открыт доступ к управлению ресурсами GCP
+- Google Cloud SDK 240.0.0 (минимум)
+
+### 1.Собрать контейнеры приложения и инфраструктуры:
+- ```src/build_images.sh``` скрипт для интерактивного билда контейнеров и пуша на свой аккаунт dockerhub
+
+### 2.Отредактировать переменные окружения для compose файлов:
+- ```.env_example``` переименовать в ```.env``` (Если не трогать ,будут браться тестовые контейнеры)
+
+### 3.Собрать образ платформы с помощью packer:
+- ```packer/variables.json.example``` переименовать в ```packer/variables.json``` отредактировать переменные (как минимум project_id)
+- Сбилдить образ из корня репозитория ```packer build -var-file=packer/variables.json packer/immutable.json```
+
+### 4.Terraform
+
+### 5. Создать раннер для приложения 
+
+</p></details>
