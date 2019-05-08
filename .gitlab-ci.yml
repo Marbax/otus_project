@@ -28,7 +28,7 @@ test_ui_py3:
   image: python:3.6.0-alpine
   environment:
     name: $TAG_NAME/$CI_COMMIT_REF_NAME
-    url: $ENV_URL/$CI_ENVIRONMENT_SLUG
+    url: $ENV_URL:8888/$CI_ENVIRONMENT_SLUG
   only:
     changes: #не понимает переменные окружения 
       - .gitlab-ci.yml
