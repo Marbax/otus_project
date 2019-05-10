@@ -1,0 +1,6 @@
+project = "docker-123123123"
+public_key_path = "~/.ssh/id_rsa.pub"
+disk_image = "crawler-full-13231231"
+private_key_path = "~/.ssh/id_rsa"
+
+
