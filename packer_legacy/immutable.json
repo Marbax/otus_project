@@ -1,0 +1,92 @@
+{
+    "variables": {
+        "project_id": null,
+        "disk_size": "100",
+        "disk_type": "pd-standard",
+        "image_description": "crawler full package",
+        "machine_type": "n1-standard-4",
+        "network": "default",
+        "source_image_family": null,
+        "tags": "crawler-platform",
+        "zone": "europe-west1-b"
+    },
+    "builders": [
+        {
+            "type": "googlecompute",
+            "project_id": "{{ user `project_id` }}",
+            "disk_size": "{{ user `disk_size` }}",
+            "disk_type": "{{ user `disk_type` }}",
+            "image_name": "crawler-full-{{timestamp}}",
+            "image_family": "crawler-full",
+            "image_description": "{{ user `image_description` }}",
+            "machine_type": "{{ user `machine_type` }}",
+            "network": "{{ user `network` }}",
+            "source_image_family": "{{ user `source_image_family` }}",
+            "ssh_username": "appuser",
+            "tags": "{{ user `tags` }}",
+            "zone": "{{ user `zone` }}"
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "file",
+            "source": "docker-compose-logging.yml",
+            "destination": "/home/appuser/docker-compose-logging.yml"
+        },
+        {
+            "type": "file",
+            "source": "docker-compose.yml",
+            "destination": "/home/appuser/docker-compose.yml"
+        },
+        {
+            "type": "file",
+            "source": "docker-compose-monitoring.yml",
+            "destination": "/home/appuser/docker-compose-monitoring.yml"
+        },
+        {
+            "type": "file",
+            "source": "docker-compose-gitlab.yml",
+            "destination": "/home/appuser/docker-compose-gitlab.yml"
+        },
+        {
+            "type": "file",
+            "source": ".gitlab-ci.yml",
+            "destination": "/home/appuser/.gitlab-ci.yml"
+        },
+        {
+            "type": "file",
+            "source": ".env",
+            "destination": "/home/appuser/.env"
+        },
+        {
+            "type": "file",
+            "source": "src/run-app.sh",
+            "destination": "/home/appuser/run-app.sh"
+        },
+        {
+            "type": "file",
+            "source": "src/run-gitlab.sh",
+            "destination": "/home/appuser/run-gitlab.sh"
+        },
+        {
+            "type": "file",
+            "source": "src/run-logging.sh",
+            "destination": "/home/appuser/run-logging.sh"
+        },
+        {
+            "type": "file",
+            "source": "src/run-monitoring.sh",
+            "destination": "/home/appuser/run-monitoring.sh"
+        },
+        {
+            "type": "shell",
+            "script": "src/docker_inst.sh",
+            "execute_command": "sudo {{.Path}}"
+        },
+        {
+            "type": "shell",
+            "script": "src/backed.sh",
+            "execute_command": "sudo {{.Path}}"
+        }
+    ]
+}

@@ -1,0 +1,156 @@
+---
+# https://docs.docker.com/compose/compose-file/
+version: '3.3'
+services:
+  prometheus:
+    restart: always
+    image: ${DOCKER_USER}/prometheus:${PROMETHEUS_VERSION}
+    ports:
+      - '${PROMETHEUS_PORT}:9090'
+    volumes:
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention=1d'
+    networks:
+        back_net:
+          aliases:
+            - prometheus
+        front_net:
+          aliases:
+            - prometheus
+
+  node-exporter: # экспортер машинных метрик
+    restart: always
+    image: prom/node-exporter:${NODE_EXPORTER_VERSION}
+    user: root
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
+      - '--collector.filesystem.ignored-mount-points="^/(var/lib/docker/)|(run/docker/netns/).*"'
+    networks:
+      back_net:
+        aliases:
+          - node-exporter
+      front_net:
+        aliases:
+          - node-exporter
+
+  mongodb_exporter: # экспортер для монги
+    restart: always
+    image: ${DOCKER_USER}/mongodb_exporter:${MONGO_EXPORTER_VERSION}
+    command:
+      - '-collect.database'
+      - '-collect.collection'
+      - '-collect.indexusage'
+      - '-collect.topmetrics'
+      - '-mongodb.uri=mongodb://mongo_db:27017'
+    networks:
+      back_net:
+        aliases:
+          - mongodb-exporter
+      front_net:
+        aliases:
+          - mongodb-exporter
+
+  blackbox-exporter: # экспортер HTTP ответов
+    restart: always
+    image: ${DOCKER_USER}/blackbox:${BLACKBOX_EXPORTER_VERSION}
+    ports:
+      - '${BLACKBOX_PORT}:9115'
+    networks:
+      back_net:
+        aliases:
+          - blackbox-exporter
+      front_net:
+        aliases:
+          - blackbox-exporter
+
+  cadvisor: # экспортер для контейнеров
+    restart: always
+    image: google/cadvisor:${CADVISOR_VERSION}
+    volumes:
+      - '/:/rootfs:ro'
+      - '/var/run:/var/run:rw'
+      - '/sys:/sys:ro'
+      - '/var/lib/docker/:/var/lib/docker:ro'
+    ports:
+      - '${CADVISOR_PORT}:8080'
+    networks:
+      back_net:
+        aliases:
+          - cadvisor
+      front_net:
+        aliases:
+          - cadvisor
+
+  grafana:
+    restart: always
+    image: ${DOCKER_USER}/grafana:${GRAFANA_VERSION}
+    volumes:
+      - grafana_data:/var/lib/grafana
+    environment:  
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_LOGIN}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+    depends_on:
+      - trickster
+    ports:
+      - ${GRAFANA_PORT}:3000
+    networks:
+      back_net:
+        aliases:
+          - grafana
+      front_net:
+        aliases:
+          - grafana
+
+  alertmanager:
+    restart: always
+    image: ${DOCKER_USER}/alertmanager:${ALERTMANAGER_VERSION}
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+    ports:
+      - ${ALERTMANAGER_PORT}:9093
+    networks:
+      back_net:
+        aliases:
+          - alertmanager
+      front_net:
+        aliases:
+          - alertmanager
+    depends_on:
+      - prometheus
+
+  trickster: # ускоряет рендер дашбордов, проксирует инфу между графаной и промитиусом
+    restart: always
+    image: tricksterio/trickster:${TRICKSTER_VERSION}
+    networks:
+      back_net:
+        aliases:
+          - trickster
+      front_net:
+        aliases:
+          - trickster
+
+volumes:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  back_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.0.10.0/24
+  front_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.0.11.0/24
+

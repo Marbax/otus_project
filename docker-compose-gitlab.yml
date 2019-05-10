@@ -1,0 +1,36 @@
+---
+# https://docs.gitlab.com/omnibus/docker/README.html
+version: '3.3'
+services:
+ gitlab-ci:
+  image: 'gitlab/gitlab-ce:${GITLAB_VERSION}'
+  restart: always
+  hostname: 'gitlab.crawler'
+  environment:
+    GITLAB_OMNIBUS_CONFIG: |
+      external_url 'http://${EXTERNAL_URL}:${HTTP_PORT}' # внешний ИП(пробрасывает на внутренний нжинкс)
+      gitlab_rails['gitlab_shell_ssh_port'] = ${SSH_PORT}
+  ports:
+    - '${HTTP_PORT}:${HTTP_PORT}'
+    - '${HTTPS_PORT}:443'
+    - '${SSH_PORT}:22'
+  volumes:
+    - '/srv/gitlab/config:/etc/gitlab' # For storing the GitLab configuration files
+    - '/srv/gitlab/logs:/var/log/gitlab' # For storing logs
+    - '/srv/gitlab/data:/var/opt/gitlab' # For storing application data
+  networks:
+    front_net:
+      aliases:
+        - gitlab
+
+networks:
+  front_net:
+      driver: bridge
+      ipam:
+        config:
+          - subnet: 10.0.10.0/24
+  back_net:
+      driver: bridge
+      ipam:
+        config:
+          - subnet: 10.0.11.0/24
