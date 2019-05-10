@@ -122,6 +122,8 @@ gcloud compute firewall-rules create "tcp-alertmanager-rule" --allow tcp:9093 \
 
 ### 5. Создать раннер для приложения 
 
+- Создать группу и проект (по дэфолту IP:8888)
+
 <details><summary>Добавление ранера</summary><p>
 
 ```
@@ -136,8 +138,8 @@ gitlab/gitlab-runner:latest
 ```
 docker exec -it gitlab-runner gitlab-runner register \
   --non-interactive \
-  --url "http://35.214.113.63:8888/" \
-  --registration-token "UhqFfYZRxR3GpaafG_vD" \
+  --url "http://35.204.19.248:8888/" \
+  --registration-token "BT2MJo2xfrvi6jxpAMG7" \
   --executor "docker" \
   --docker-image alpine:latest \
   --description "crawler-runner-01" \

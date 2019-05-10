@@ -52,7 +52,7 @@ resource "google_compute_firewall" "firewall_admin_net" {
     ports    = ["22", "2222", "9090", "8080", "3000", "5601", "8888", "9093"]
   }
 
-  source_ranges = ["93.126.79.67/32"]
+  source_ranges = ["93.126.79.67/32", "${google_compute_instance.crawler.network_interface.0.access_config.0.assigned_nat_ip}/32"]
   target_tags   = ["crawler"]
 }
 

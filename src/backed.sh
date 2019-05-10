@@ -86,4 +86,3 @@ docker-compose -f docker-compose-logging.yml up -d
 docker-compose -f docker-compose-monitoring.yml up -d
 docker-compose -f docker-compose.yml up -d
 docker-compose -f docker-compose-gitlab.yml up -d
-

@@ -8,7 +8,7 @@ services:
   hostname: 'gitlab.crawler'
   environment:
     GITLAB_OMNIBUS_CONFIG: |
-      external_url 'http://${EXTERNAL_URL}' # внешний ИП
+      external_url 'http://${EXTERNAL_URL}:${HTTP_PORT}' # внешний ИП
       gitlab_rails['gitlab_shell_ssh_port'] = ${HTTP_PORT}
   ports:
     - '${HTTP_PORT}:80'
