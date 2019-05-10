@@ -20,8 +20,14 @@ services:
 #    environment:
 #      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED}
 
+<<<<<<< HEAD
   crawler-ui:
     image: ${DOCKER_USER}/crawler-ui:${UI_VER}
+=======
+  ui:
+    env_file: .env
+    image: ${USERNAME}/crawler-ui:${UI_VER}
+>>>>>>> gitlab-test
     restart: always
     ports:
       - ${UI_HOST_PORT}:${UI_APP_PORT}/tcp
@@ -42,8 +48,14 @@ services:
     depends_on:
       - mongo_db
 
+<<<<<<< HEAD
   crawler-app:
     image: ${DOCKER_USER}/crawler-app:${CRAWLER_VER}
+=======
+  crawler:
+    env_file: .env
+    image: ${USERNAME}/crawler-app:${CRAWLER_VER}
+>>>>>>> gitlab-test
     restart: always
     ports:
       - ${APP_HOST_PORT}:${APP_APP_PORT}/tcp
