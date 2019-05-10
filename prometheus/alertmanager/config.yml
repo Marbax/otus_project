@@ -15,11 +15,3 @@ receivers:
     slack_configs:
       - channel: '#nikita_morozov'
         send_resolved: true
-  - name: 'email'
-    email_configs:
-      - to: 'ss@domain.tld'
-        send_resolved: true
-        from: 'ss@domain.tld'
-        smarthost: 'smtp.yandex.ru:587'
-        auth_username: 'alert@domain.tld'
-        auth_password: 'SecRetPas$$word'

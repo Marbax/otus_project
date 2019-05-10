@@ -45,37 +45,7 @@ project work
 
 </p></details>
 
-
-<details><summary>Добавление ранера</summary><p>
-
-```
-docker run -d --name gitlab-runner --restart always \
--v /srv/gitlab-runner/config:/etc/gitlab-runner \
--v /var/run/docker.sock:/var/run/docker.sock \
-gitlab/gitlab-runner:latest
-```
-
-- Урл и токен можно посмотреть в Ваш_проект_на_гитлабе -> Settings -> CI/CD -> Runners
-
-```
-docker exec -it gitlab-runner gitlab-runner register \
-  --non-interactive \
-  --url (адресс_гитлаба_напр)"http://192.168.88.12/" \
-  --registration-token (токен_из_гитлаба_напр)"pn_6afCNnncRD-5P4Jnv" \
-  --executor "docker" \
-  --docker-image alpine:latest \
-  --description "crawler-runner-01" \
-  --request-concurrency 3 \
-  --tag-list "docker,gitlab,crawler-runner" \
-  --run-untagged="true" \
-  --locked="false" \
-  --docker-privileged
-```
-
-</p></details>
-
-
-<details><summary> Правила фаерволла для доступа к сервисам </summary><p>
+<details><summary> Правила фаерволла для доступа к сервисам(terraform сам их откроет) </summary><p>
 
 (Правила согласно открытым портам контейнеров ,указаным в env файлах)
 
@@ -125,24 +95,62 @@ gcloud compute firewall-rules create "tcp-alertmanager-rule" --allow tcp:9093 \
 ### Для использования нужны :
 - Docker version 17.05.0-ce (минимум,подойдет и версия из apt)
 - docker-compose version 1.17.1 (минимум,подойдет и версия из apt)
-- Нужно быть зарегестрированым в dockerhub
+- Нужно быть зарегестрированым в dockerhub (для создания своих образов)
 - packer version 1.3.3 (минимум)
 - Terraform v0.11.9
 - У packer и terraform должен быть открыт доступ к управлению ресурсами GCP
 - Google Cloud SDK 240.0.0 (минимум)
 
 ### 1.Собрать контейнеры приложения и инфраструктуры:
+- В ```prometheus/alertmanager/config.yml``` добавить свои данные для алертов в slack
 - ```src/build_images.sh``` скрипт для интерактивного билда контейнеров и пуша на свой аккаунт dockerhub
 
 ### 2.Отредактировать переменные окружения для compose файлов:
-- ```.env_example``` переименовать в ```.env``` (Если не трогать ,будут браться тестовые контейнеры)
+- ```.env.example``` переименовать в ```.env``` (Если не трогать ,будут браться тестовые контейнеры)
 
 ### 3.Собрать образ платформы с помощью packer:
 - ```packer/variables.json.example``` переименовать в ```packer/variables.json``` отредактировать переменные (как минимум project_id)
 - Сбилдить образ из корня репозитория ```packer build -var-file=packer/variables.json packer/immutable.json```
+- Возможен баг ,что при сборке не сможет поставить docker ,просто повторить сборку 
 
-### 4.Terraform
+### 4.Поднять инстанс с помощью terraform:
+- ```terraform/terraform.tfvars.example``` переименовать в ```terraform/terraform.tfvars``` отредактировать переменные (как минимум project поставить свой проект , disk_image поставить образ диска ,который сделает пакер)
+- Сделать ```terraform init ``` в директории ```terraform/``` , затем ```terraform apply -auto-approve``` для поднятия инстанса
+
+### 5. Настройка логирования:
+- Добавить на kibana pattern fluentd в вебе(по дэфолту IP:5601)
 
 ### 5. Создать раннер для приложения 
 
+<details><summary>Добавление ранера</summary><p>
+
+```
+docker run -d --name gitlab-runner --restart always \
+-v /srv/gitlab-runner/config:/etc/gitlab-runner \
+-v /var/run/docker.sock:/var/run/docker.sock \
+gitlab/gitlab-runner:latest
+```
+
+- Урл и токен можно посмотреть в Ваш_проект_на_гитлабе -> Settings -> CI/CD -> Runners
+
+```
+docker exec -it gitlab-runner gitlab-runner register \
+  --non-interactive \
+  --url "http://35.214.113.63:8888/" \
+  --registration-token "UhqFfYZRxR3GpaafG_vD" \
+  --executor "docker" \
+  --docker-image alpine:latest \
+  --description "crawler-runner-01" \
+  --request-concurrency 3 \
+  --tag-list "docker,gitlab,crawler,crawler-runner" \
+  --run-untagged="true" \
+  --locked="false" \
+  --docker-privileged
+
+```
+
 </p></details>
+
+</p></details>
+
+

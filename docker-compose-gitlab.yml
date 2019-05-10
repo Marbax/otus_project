@@ -1,7 +1,8 @@
 ---
-version: '3.3'
 # https://docs.gitlab.com/omnibus/docker/README.html
-web:
+version: '3.3'
+services:
+ gitlab-ci:
   image: 'gitlab/gitlab-ce:${GITLAB_VERSION}'
   restart: always
   hostname: 'gitlab.crawler'
