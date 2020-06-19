@@ -52,7 +52,7 @@ project work
 ```
 - Правило для доступа к docker-machine ,если создается через нее, в других случаях надобности в нем нет
 gcloud compute firewall-rules create "tcp-host-rule" --allow tcp:2376 \
-      --source-ranges="93.126.79.67/32" \
+      --source-ranges="your_ip/32" \
       --description="Access to docker-machine host"
 
 gcloud compute firewall-rules create "tcp-ui-https-rule" --allow tcp:80 \
@@ -60,31 +60,31 @@ gcloud compute firewall-rules create "tcp-ui-https-rule" --allow tcp:80 \
       --description="HTTP access for aplication ui"
 
 gcloud compute firewall-rules create "tcp-prometheus-rule" --allow tcp:9090 \
-      --source-ranges="93.126.79.67/32" \
+      --source-ranges="your_ip/32" \
       --description="HTTP access for prometheus"
 
 gcloud compute firewall-rules create "tcp-cadvisor-rule" --allow tcp:8080 \
-      --source-ranges="93.126.79.67/32" \
+      --source-ranges="your_ip/32" \
       --description="HTTP access for cadvisor"
 
 gcloud compute firewall-rules create "tcp-grafana-rule" --allow tcp:3000 \
-      --source-ranges="93.126.79.67/32" \
+      --source-ranges="your_ip/32" \
       --description="HTTP access for grafana (monitoring)"
 
 gcloud compute firewall-rules create "tcp-kibana-rule" --allow tcp:5601 \
-      --source-ranges="93.126.79.67/32" \
+      --source-ranges="your_ip/32" \
       --description="HTTP access for kibana (logging)"
 
 gcloud compute firewall-rules create "tcp-http-gitlab-rule" --allow tcp:8888 \
-      --source-ranges="93.126.79.67/32" \
+      --source-ranges="your_ip/32" \
       --description="HTTP access for gitlab"
 
 gcloud compute firewall-rules create "tcp-ssh-gitlab-rule" --allow tcp:2222 \
-      --source-ranges="93.126.79.67/32" \
+      --source-ranges="your_ip/32" \
       --description="SSH access for gitlab"
 
 gcloud compute firewall-rules create "tcp-alertmanager-rule" --allow tcp:9093 \
-      --source-ranges="93.126.79.67/32" \
+      --source-ranges="your_ip/32" \
       --description="HTTP access for alertmanager"
 ```
 
